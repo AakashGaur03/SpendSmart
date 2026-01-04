@@ -1,0 +1,37 @@
+FOOD RELATED
+Groceries: Milk, Bread, Fruits, Vegetables, Meat, etc.
+Food: Restaurant Meal, Fast Food, Coffee.
+
+SHOPPING
+Shopping: Clothes, Shoes, Electronics, Car.
+
+BILLS 
+Subscriptions: Streaming Service, Gym Membership (Quantity always 1).
+Housing and Utilities: Rent, Electricity Bill, Gas Bill (Quantity always 1).
+
+TRANSPORT
+Transportation: Gas, Public Transit, Car Repair (Quantity always 1).
+
+ENTERTAINMENT
+Hobbies: Books, Art Supplies, Video Games.
+Friend Activities: Movie Tickets, Concert Tickets, Dinner with Friends.
+Travel: Plane Ticket, Hotel Stay, Taxi/Uber (Plane Ticket and Hotel Stay have Quantity always 1).
+
+
+PERSNOL
+Personal Hygiene: Toothpaste, Shampoo, Soap.
+Fitness: Yoga Class, Personal Trainer, Workout Equipment.
+
+OTHERS
+Medical/Dental: Doctor Visit, Dentist Visit, Medicine (Quantity always 1).
+Gifts: Flowers, Gift Cards, Jewelry.
+
+
+Final Category          	Includes
+Food	                    Groceries, Food
+Shopping	                Shopping
+Bills	                    Subscriptions, Housing and Utilities
+Transport	                Transportation
+Entertainment	            Hobbies, Friend Activities, Travel
+Personal	                Personal Hygiene, Fitness
+Other	                    Medical/Dental, Gifts
