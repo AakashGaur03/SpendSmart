@@ -162,3 +162,26 @@ The model is evaluated using standard multi-class classification metrics:
 - **Confusion Matrix**
   - Visualizes misclassifications across categories
   - Helps identify overlapping or ambiguous expense classes
+
+## Feature Extraction
+
+Expense items are converted into numerical features using TF-IDF
+(Term Frequency–Inverse Document Frequency).
+
+- Input feature: `Item` text
+- Output label: normalized spending category
+- Unigrams and bigrams are used to capture short phrases
+  (e.g., "metro ticket", "electricity bill")
+
+TF-IDF is chosen over raw word counts to reduce the impact of
+frequent generic terms and improve semantic discrimination.
+
+## Artifact = Output of training
+
+When your model finishes training, you don’t want to:
+retrain every time
+lose learned weights
+So you save the result.
+Typical ML artifacts:
+model.pkl → trained classifier
+vectorizer.pkl → TF-IDF text transformer
