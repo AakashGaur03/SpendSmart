@@ -185,3 +185,13 @@ So you save the result.
 Typical ML artifacts:
 model.pkl → trained classifier
 vectorizer.pkl → TF-IDF text transformer
+
+## Model Artifacts
+
+After training, the following artifacts are generated:
+
+- `model.pkl`: Trained text classification model
+- `vectorizer.pkl`: TF-IDF vectorizer used during training
+
+These artifacts are reused by the ML API service
+to generate predictions without retraining.
