@@ -195,3 +195,59 @@ After training, the following artifacts are generated:
 
 These artifacts are reused by the ML API service
 to generate predictions without retraining.
+
+## Model Selection
+
+Two models were trained and evaluated:
+
+- Multinomial Naive Bayes
+- Logistic Regression (primary model)
+
+Both models achieved high accuracy on validation and test sets.
+Logistic Regression was selected as the primary model because:
+
+- It provides well-calibrated class probabilities via `predict_proba`
+- Feature weights are interpretable (word-level influence per category)
+- It is robust for sparse TF-IDF features
+- It generalizes well to unseen text variations
+
+Multinomial Naive Bayes is retained only for experimentation and comparison.
+
+## Prediction Confidence
+
+The model outputs both:
+
+- Predicted category (`predict`)
+- Per-category probabilities (`predict_proba`)
+
+The highest probability is used as a confidence score.
+Predictions are **not treated as 100% certain**.
+
+Low-confidence predictions can be flagged in the application
+to allow users to manually correct the category.
+
+## Known Limitations
+
+- Training data contains short, structured item descriptions
+- Real-world transaction text may be noisier or incomplete
+- Some categories (e.g., Entertainment vs Personal) may overlap semantically
+- The model relies purely on text and does not use metadata
+  such as merchant name, amount, or transaction time
+
+Future improvements may include:
+
+- Additional metadata features
+- Larger and more diverse datasets
+- Incremental retraining using user feedback
+
+## Out of Scope
+
+This module does NOT handle:
+
+- API endpoints
+- Real-time inference
+- Database storage
+- User feedback persistence
+- Model retraining automation
+
+These responsibilities belong to downstream services.
