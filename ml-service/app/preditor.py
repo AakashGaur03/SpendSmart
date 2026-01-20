@@ -2,30 +2,51 @@
 # Take raw text → return prediction + confidence + probabilities
 # MAKE SURE TO REMOVE CONSOLES ONCE TESTED THE LOGS 
 
+
 from typing import Dict,Tuple
-from config import model,vectorizer
+from config import model,vectorizer,DEBUG
 from text_utils import clean_text
 
 
-def predict_category(item:str)-> Tuple[str,float,Dict[str,float]]:
+def get_confidence_level(confidence: float) -> str:
+    """
+    Convert numeric confidence into human-readable level
+    """
+    if confidence >= 0.75:
+        return "high"
+    elif confidence >= 0.50:
+        return "medium"
+    else:
+        return "low"
+
+
+def predict_category(item:str)-> Tuple[str,float,str,Dict[str,float]]:
     """
     Predict expense category for a given item description.
 
     Returns:
         predicted_category (str)
         confidence (float)
+        confidence_level (str)
         probabilities (dict[str, float])
     """
+    
+    if not item or not item.strip():
+        raise ValueError("Item description cannot be empty")
+    
     # 1. Clean input text
     cleaned_item = clean_text(item)
-    print(cleaned_item)
+    if DEBUG:
+        print(cleaned_item)
     # 2. Vectorize Text
     item_vector = vectorizer.transform([cleaned_item])
-    print(item_vector)
+    if DEBUG:
+        print(item_vector)
 
     # 3. Get class probabilities
     probs = model.predict_proba(item_vector)[0]
-    print(probs)
+    if DEBUG:
+        print(probs)
 
 
     # 4. Map probabilities to class names
@@ -37,13 +58,17 @@ def predict_category(item:str)-> Tuple[str,float,Dict[str,float]]:
 
     # 5. Pick best class
     predicted_index = probs.argmax()
-    print(predicted_index)
+    if DEBUG:
+        print(predicted_index)
     predicted_category = class_labels[predicted_index]
-    print(predicted_category)
+    if DEBUG:
+        print(predicted_category)
     confidence = float(probs[predicted_index])
-    print(confidence)
+    if DEBUG:
+        print(confidence)
+    confidence_level = get_confidence_level(confidence)
 
-    return predicted_category,confidence,probabilities
+    return predicted_category,confidence,confidence_level,probabilities
 
 
 

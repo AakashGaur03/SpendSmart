@@ -5,6 +5,7 @@
 import os
 import joblib
 
+DEBUG = True
 # __file__ current File means config.py
 # abspath full absolute path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

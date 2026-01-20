@@ -1,0 +1,9 @@
+cd ml-model
+source venv/bin/activate
+python train.py
+
+
+Working on ML API:
+cd ml-service
+source venv/bin/activate
+uvicorn main:app --reload

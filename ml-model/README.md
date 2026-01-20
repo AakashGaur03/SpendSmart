@@ -1,13 +1,31 @@
 # ML Module
 
+---
+
 ## Scope
 
-This module is responsible for:
-
 - Preparing and cleaning expense text data
-- **Training an NLP-based classification model**
+- **Training an NLP-based classification model** (`train.py`)
 - Evaluating model performance
 - Exporting trained artifacts (model and vectorizer)
+
+---
+
+## Virtual Environment Setup
+
+We use a Python virtual environment to isolate dependencies.
+
+```bash
+# Create venv in the project root
+python3 -m venv venv
+source venv/bin/activate  # Linux / Mac
+# OR
+venv\Scripts\activate     # Windows
+
+
+pip install -r requirements.txt
+
+```
 
 No API or UI logic lives here.
 
@@ -251,3 +269,7 @@ This module does NOT handle:
 - Model retraining automation
 
 These responsibilities belong to downstream services.
+
+```
+
+```
