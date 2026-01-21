@@ -8,9 +8,9 @@ import joblib
 DEBUG = True
 # __file__ current File means config.py
 # abspath full absolute path
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-ARTIFACTS_DIR = os.path.join(BASE_DIR,"artifacts")
+ARTIFACTS_DIR = os.path.join(BASE_DIR, "artifacts")
 
 VECTORIZER_PATH = os.path.join(ARTIFACTS_DIR, "tfidf_vectorizer.pkl")
 MODEL_PATH = os.path.join(ARTIFACTS_DIR, "expense_classifier_lr.pkl")

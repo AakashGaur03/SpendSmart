@@ -7,6 +7,7 @@ class PredictionRequest(BaseModel):
 class PredictionResponse(BaseModel):
     predicted_category:str
     confidence:float
+    confidence_level: str
     probabilities:Dict[str,float]
 
 # pydantic

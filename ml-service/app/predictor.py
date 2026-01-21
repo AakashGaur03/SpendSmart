@@ -4,15 +4,15 @@
 
 
 from typing import Dict,Tuple
-from config import model,vectorizer,DEBUG
-from text_utils import clean_text
+from app.config import model,vectorizer,DEBUG
+from app.text_utils import clean_text
 
 
 def get_confidence_level(confidence: float) -> str:
     """
     Convert numeric confidence into human-readable level
     """
-    if confidence >= 0.75:
+    if confidence >= 0.85:
         return "high"
     elif confidence >= 0.50:
         return "medium"
@@ -68,7 +68,12 @@ def predict_category(item:str)-> Tuple[str,float,str,Dict[str,float]]:
         print(confidence)
     confidence_level = get_confidence_level(confidence)
 
-    return predicted_category,confidence,confidence_level,probabilities
+    return {
+        "predicted_category": predicted_category,
+        "confidence": confidence,
+        "confidence_level": confidence_level,
+        "probabilities": probabilities
+    }
 
 
 
