@@ -19,8 +19,15 @@ def get_confidence_level(confidence: float) -> str:
     else:
         return "low"
 
+def get_top_k_predictions(probs:dict,k:int =3):
+    sorted_probs = sorted(probs.items(), key=lambda x:x[1],reverse =True)
+    return [
+        {"category": cat, "confidence": float(conf)}
+        for cat, conf in sorted_probs[:k]
+    ]
 
-def predict_category(item:str)-> Tuple[str,float,str,Dict[str,float]]:
+# def predict_category(item:str)-> Tuple[str,float,str,Dict[str,float],Dict[str,float]]:
+def predict_category(item: str) -> dict:
     """
     Predict expense category for a given item description.
 
@@ -29,6 +36,7 @@ def predict_category(item:str)-> Tuple[str,float,str,Dict[str,float]]:
         confidence (float)
         confidence_level (str)
         probabilities (dict[str, float])
+        top_predictions (dict[str, float])
     """
     
     if not item or not item.strip():
@@ -67,12 +75,14 @@ def predict_category(item:str)-> Tuple[str,float,str,Dict[str,float]]:
     if DEBUG:
         print(confidence)
     confidence_level = get_confidence_level(confidence)
+    top_predictions = get_top_k_predictions(probabilities, k=3)
 
     return {
         "predicted_category": predicted_category,
         "confidence": confidence,
         "confidence_level": confidence_level,
-        "probabilities": probabilities
+        "probabilities": probabilities,
+        "top_predictions": top_predictions,
     }
 
 

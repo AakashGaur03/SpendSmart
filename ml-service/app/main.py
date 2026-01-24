@@ -1,6 +1,10 @@
 from fastapi import FastAPI, HTTPException
-from app.schema import PredictionRequest, PredictionResponse
+from app.schema.prediction import PredictionRequest, PredictionResponse
 from app.predictor import predict_category
+
+from app.schema.feedback import FeedbackRequest, FeedbackResponse
+from app.storage.feedback_store import store_feedback
+
 
 app = FastAPI(
     title="Expense Category Prediction Service",
@@ -33,4 +37,23 @@ def predict_expense(request: PredictionRequest):
         raise HTTPException(
             status_code=500,
             detail="Internal prediction error"
+        )
+
+@app.post("/feedback", response_model=FeedbackResponse)
+def submit_feedback(request: FeedbackRequest):
+    """
+    Store user feedback for future model retraining
+    """
+    try:
+        store_feedback(request.dict())
+
+        return {
+            "status": "success",
+            "message": "Feedback stored successfully"
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to store feedback"
         )

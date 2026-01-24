@@ -3,8 +3,8 @@
 This service exposes a lightweight API for predicting expense categories
 using a pre-trained NLP model.
 
-It **does not train models**.
-It only loads trained artifacts and performs inference.
+It **does not train models at runtime**.
+It performs inference and **collects structured user feedback for future retraining**.
 
 ---
 
@@ -20,6 +20,8 @@ This service is responsible for:
   - confidence score
   - per-category probabilities
   - confidence level (high / medium / low)
+  - top-3 category suggestions
+- Collecting structured user feedback for continuous learning
 
 ---
 
@@ -53,41 +55,67 @@ venv\Scripts\activate     # Windows
 
 
 pip install -r requirements.txt
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 
 ```
 
 ## Project Structure
 
-````text
+```text
 ml-service/
+├── app/
+│   ├── main.py                # FastAPI app entrypoint
+│   ├── predictor.py           # Core ML inference logic
+│   ├── text_utils.py          # Text preprocessing utilities
+│   ├── config.py              # Model & vectorizer loader
+│   ├── schema/
+│   │   ├── prediction.py      # Prediction request/response schemas
+│   │   └── feedback.py        # Feedback schemas
+│   ├── storage/
+│   │   └── feedback_store.py  # Feedback persistence layer
+│
 ├── artifacts/
-│   ├── tfidf_vectorizer.pkl
-│   └── expense_classifier_lr.pkl
-├── schema.py        # Request & response schemas (Pydantic)
-├── text_utils.py    # Text cleaning utilities
-├── config.py        # Model & vectorizer loading
-├── predictor.py    # Core prediction logic
-├── main.py          # API entrypoint (FastAPI)
-└── README.md
+│   ├── tfidf_vectorizer.pkl   # Trained TF-IDF vectorizer
+│   └── expense_classifier_lr.pkl # Trained ML model
+│
+├── data/
+│   └── feedback.jsonl         # Append-only feedback event store
+│
+├── requirements.txt
+├── README.md
+└── venv/
+```
 
 ---
 
 ## What This Service Does NOT Do
 
-- Model training
-- Data preprocessing pipelines
-- User feedback storage
-- Retraining automation
+- Model training (handled offline)
+- Automated retraining pipelines (future scope)
+- Model deployment orchestration
 - Database access
 
 These responsibilities belong to other modules.
 
 ---
 
+## API Endpoints
+
+### Health Check
+
+GET /health
+
+### Predict Expense Category
+
+POST /predict
+
+### Submit User Feedback
+
+POST /feedback
+
 ## Running Locally (after main.py is added)
 
 ```bash
 pip install -r requirements.txt
-uvicorn main:app --reload
-````
+uvicorn app.main:app --reload
+```
