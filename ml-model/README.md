@@ -140,12 +140,10 @@ No stemming/Lemmatization ("running" → "run"), stop-word removal, or rule-base
 The primary dataset is split into three subsets:
 
 - **Training Set (60%)**
-
   - Used to train the classification model
   - The model learns patterns between expense text and normalized categories
 
 - **Validation Set (20%)**
-
   - Used for hyperparameter tuning and model selection
   - Helps detect overfitting during training
 
@@ -161,19 +159,15 @@ The split is performed randomly while preserving class distribution
 The model is evaluated using standard multi-class classification metrics:
 
 - **Accuracy**
-
   - Measures overall correctness of predictions
 
 - **Precision**
-
   - Measures how many predicted category labels are correct
 
 - **Recall**
-
   - Measures how well the model identifies all instances of a category
 
 - **F1-score**
-
   - Harmonic mean of precision and recall
   - Used to balance false positives and false negatives
 
@@ -272,4 +266,29 @@ These responsibilities belong to downstream services.
 
 ```
 
+```
+
+## Project Structure
+
+```text
+ml-model/
+├── artifacts/
+│   ├── tfidf_vectorizer.pkl   # Trained TF-IDF vectorizer
+│   └── expense_classifier_lr.pkl # Trained ML model
+│   └── expense_classifier_nb.pkl # Trained ML model
+│
+├── data/
+│   ├── raw/
+│       └── backup_primary_spending_patterns_detailed.csv
+│       └── CategoryMapping
+│       └── primary_spending_patterns_detailed.csv
+│       └── testing_later_upi_transactions_sample.csv
+├── notebooks/
+expense_category_model.ipynb
+├── training/
+│   └── retrain.py
+│
+├── requirements.txt
+├── README.md
+└── venv/
 ```
