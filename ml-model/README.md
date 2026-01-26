@@ -283,12 +283,25 @@ ml-model/
 │       └── CategoryMapping
 │       └── primary_spending_patterns_detailed.csv
 │       └── testing_later_upi_transactions_sample.csv
+│   ├── processed/
+│       └── training_dataset.csv
+├── feedback/
+│   └── feedback.jsonl
 ├── notebooks/
-expense_category_model.ipynb
+│   └── expense_category_model.ipynb
 ├── training/
-│   └── retrain.py
+│   ├── data/
+│       └── retrain.py
+│   └── dataset_builder.py
+│   └── text_utils.py
 │
 ├── requirements.txt
 ├── README.md
 └── venv/
 ```
+
+Command to build feedback_dataset.csv from feedback.jsonl
+python training/dataset_builder.py
+
+Command to build build_base_dataset from primary_spending_patterns_detailed.csv
+python training/build_base_dataset.py
