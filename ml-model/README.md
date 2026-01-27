@@ -305,3 +305,41 @@ python training/dataset_builder.py
 
 Command to build build_base_dataset from primary_spending_patterns_detailed.csv
 python training/build_base_dataset.py
+
+```text
+Base Dataset + Feedback Dataset
+        ↓
+     Merge & Clean
+        ↓
+   Vectorizer Training
+        ↓
+     Model Training
+        ↓
+      Evaluation
+        ↓
+ Versioned Artifact Saving
+```
+
+Output Artifacts
+
+Each retraining run generates:
+
+```text
+artifacts/
+├── latest/
+│     ├── expense_classifier_lr.pkl
+│     └── tfidf_vectorizer.pkl
+│
+└── versions/
+      └── <timestamp>/
+            ├── expense_classifier_lr.pkl
+            └── tfidf_vectorizer.pkl
+
+
+latest/ → model currently used in production
+
+versions/ → full training history for rollback & auditing
+```
+
+Command to Run Retraining
+python training/retrain.py
