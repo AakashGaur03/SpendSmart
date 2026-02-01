@@ -137,22 +137,19 @@ No stemming/Lemmatization ("running" → "run"), stop-word removal, or rule-base
 
 ## Data Splitting Strategy
 
-The primary dataset is split into three subsets:
+The primary dataset is split into two subsets:
 
-- **Training Set (60%)**
+- **Training Set (80%)**
   - Used to train the classification model
   - The model learns patterns between expense text and normalized categories
-
-- **Validation Set (20%)**
-  - Used for hyperparameter tuning and model selection
-  - Helps detect overfitting during training
 
 - **Test Set (20%)**
   - Held out and used only once for final evaluation
   - Provides an unbiased estimate of real-world performance
 
 The split is performed randomly while preserving class distribution
-(stratified split).
+(stratified split). Model evaluation uses cross-validation techniques
+during training to assess performance without a separate validation set.
 
 ## Evaluation Metrics
 
@@ -202,8 +199,9 @@ vectorizer.pkl → TF-IDF text transformer
 
 After training, the following artifacts are generated:
 
-- `model.pkl`: Trained text classification model
-- `vectorizer.pkl`: TF-IDF vectorizer used during training
+- `expense_classifier_lr.pkl`: Trained Logistic Regression classifier
+- `expense_classifier_nb.pkl`: Trained Multinomial Naive Bayes classifier (for comparison)
+- `tfidf_vectorizer.pkl`: TF-IDF vectorizer used during training
 
 These artifacts are reused by the ML API service
 to generate predictions without retraining.
@@ -273,38 +271,81 @@ These responsibilities belong to downstream services.
 ```text
 ml-model/
 ├── artifacts/
-│   ├── tfidf_vectorizer.pkl   # Trained TF-IDF vectorizer
-│   └── expense_classifier_lr.pkl # Trained ML model
-│   └── expense_classifier_nb.pkl # Trained ML model
+│   ├── latest/                    # Latest production models
+│   │   ├── expense_classifier_lr.pkl
+│   │   └── tfidf_vectorizer.pkl
+│   ├── versions/                  # Versioned model snapshots
+│   │   └── <timestamp>/
+│   │       ├── expense_classifier_lr.pkl
+│   │       └── tfidf_vectorizer.pkl
+│   ├── expense_classifier_lr.pkl  # Legacy location
+│   ├── expense_classifier_nb.pkl  # Naive Bayes model (experimental)
+│   └── tfidf_vectorizer.pkl        # Legacy location
 │
 ├── data/
 │   ├── raw/
-│       └── backup_primary_spending_patterns_detailed.csv
-│       └── CategoryMapping
-│       └── primary_spending_patterns_detailed.csv
-│       └── testing_later_upi_transactions_sample.csv
-│   ├── processed/
+│   │   ├── backup_primary_spending_patterns_detailed.csv
+│   │   ├── CategoryMapping
+│   │   ├── primary_spending_patterns_detailed.csv
+│   │   └── testing_later_upi_transactions_sample.csv
+│   └── processed/
 │       └── training_dataset.csv
+│
 ├── feedback/
-│   └── feedback.jsonl
+│   └── feedback.jsonl             # User feedback for retraining
+│
 ├── notebooks/
 │   └── expense_category_model.ipynb
+│
 ├── training/
 │   ├── data/
-│       └── retrain.py
-│   └── dataset_builder.py
-│   └── text_utils.py
+│   │   └── feedback_dataset.csv   # Processed feedback data
+│   ├── build_base_dataset.py      # Build base training dataset
+│   ├── dataset_builder.py          # Convert feedback.jsonl to CSV
+│   └── retrain.py                  # Retrain model with feedback
 │
+├── utils/
+│   └── text_utils.py               # Text preprocessing utilities
+│
+├── train.py                        # Initial model training script
 ├── requirements.txt
 ├── README.md
 └── venv/
 ```
 
-Command to build feedback_dataset.csv from feedback.jsonl
-python training/dataset_builder.py
+## Quick Start
 
-Command to build build_base_dataset from primary_spending_patterns_detailed.csv
-python training/build_base_dataset.py
+### Initial Training
+
+1. **Build base dataset from raw data:**
+   ```bash
+   python training/build_base_dataset.py
+   ```
+   This processes `data/raw/primary_spending_patterns_detailed.csv` and generates `data/processed/training_dataset.csv`.
+
+2. **Train the model:**
+   ```bash
+   python train.py
+   ```
+   This trains the Logistic Regression model and saves artifacts to `artifacts/`.
+
+### Retraining with User Feedback
+
+1. **Convert feedback to training dataset:**
+   ```bash
+   python training/dataset_builder.py
+   ```
+   This reads `feedback/feedback.jsonl` and generates `training/data/feedback_dataset.csv`.
+
+2. **Retrain model with base + feedback data:**
+   ```bash
+   python training/retrain.py
+   ```
+   This merges base and feedback datasets, retrains the model, and saves versioned artifacts to `artifacts/versions/` and updates `artifacts/latest/`.
+
+## Retraining Workflow
+
+The retraining process combines base synthetic data with real user feedback:
 
 ```text
 Base Dataset + Feedback Dataset
@@ -320,7 +361,7 @@ Base Dataset + Feedback Dataset
  Versioned Artifact Saving
 ```
 
-Output Artifacts
+### Output Artifacts
 
 Each retraining run generates:
 
@@ -334,12 +375,12 @@ artifacts/
       └── <timestamp>/
             ├── expense_classifier_lr.pkl
             └── tfidf_vectorizer.pkl
-
-
-latest/ → model currently used in production
-
-versions/ → full training history for rollback & auditing
 ```
 
-Command to Run Retraining
-python training/retrain.py
+- **`latest/`** → Model currently used in production (updated on each retrain)
+- **`versions/`** → Full training history for rollback & auditing
+
+### Training vs Retraining
+
+- **`train.py`**: Initial training from base dataset only. Creates initial model artifacts.
+- **`training/retrain.py`**: Retraining that merges base dataset with user feedback. Creates versioned artifacts and updates latest model.

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
-from typing import Dict
+from typing import Dict, List
+from app.schema.feedback import TopPrediction
 
 class PredictionRequest(BaseModel):
     item: str = Field(...,min_length=1,description = "Expense Item Description")
@@ -9,6 +10,7 @@ class PredictionResponse(BaseModel):
     confidence:float
     confidence_level: str
     probabilities:Dict[str,float]
+    top_predictions: List[TopPrediction]
 
 # pydantic
 # A library used for data validation
