@@ -1,0 +1,29 @@
+.expense-list {
+	margin-top: 0.5rem;
+}
+
+.expense-list-title {
+	margin: 0 0 0.75rem;
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--text-muted);
+}
+
+.expense-list-ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.expense-list-empty {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	padding: 2rem;
+	text-align: center;
+	color: var(--text-muted);
+	font-size: 0.95rem;
+}
